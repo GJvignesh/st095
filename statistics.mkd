@@ -1,0 +1,501 @@
+# Notes on Statistics
+
+Notes on the introductory statistics course at Udacity, [ST095](https://classroom.udacity.com/courses/st095).
+
+## Introduction
+
+Notes from the introductory chapter:
+
+- Use random sampling to reduce bias and make samples as representative of the population as possible.
+
+## Measures of Central Tendency
+
+These are measures of the center of a distribution.
+
+### Mode
+
+The ***mode*** is the value in a (discrete) distribution that occurs the most often. For continuous distributions, the mode will be a range of values and will be dependent on the bin size. The modes taken from different samples from the same distribution are also likely to be somewhat arbitrary and will not necessarily represent the population. Finally, there is no analytical equation for mode. Therefore, the mode is not very practical for statistical inference.
+
+Other notes:
+
+- Distributions can have multiple modes. For example, a distribution that has two distinct modes is called [*bimodal*](https://duckduckgo.com/?q=bimodal+distribution&ia=images).
+
+- A [uniform distribution](https://duckduckgo.com/?q=uniform+distribution&ia=images) has no mode, since all values occur with equal frequency.
+
+- Adding a new value to the distribution does not necessarily change the mode. The mode is therefore not representative of all values in a distribution.
+
+- Mode works for both numerical and categorical data.
+
+### Mean
+
+The ***mean*** is the average or center of mass of a distribution:
+
+$$\bar{x} = \frac{1}{N} \sum_{i=1}^N x_i$$
+
+Samples taken from the same distribution will have similar means, making the mean suitable for statistical inference.
+
+Unlike the mode and median, the mean is affected by all values in a distribution. In fact, adding extreme values (outliers) to a distribution will skew the mean, making it *less robust* than the median.
+
+### Median
+
+The ***median*** is the middle value of a set of values. If the number of values is even, then the median is the average of the two middle values. The median splits the distribution into two equal halves.
+
+Unlike the mean, the median is not affected as much by outliers, making the median *more robust* than the mean. The median is therefore a better measure of central tendency than the mean in highly skewed distributions.
+
+### Mean vs Median vs Mode
+
+- For a *positively skewed* distribution, mode < median < mean.
+- For a *normal* distribution, mean = median = mode.
+
+## Variability
+
+These are measures of the spread of a distribution.
+
+### Range
+
+The ***range*** of a distribution is the difference between the maximum and minimum values.
+
+### Interquartile Range (IQR)
+
+The different quartiles of a distribution are:
+
+- Q1 is the value that splits the lowest 25% of the distribution from the rest. It is the middle number between the lowest value and the median.
+- Q3 is the value that splits the highest 25% f the distribution from the rest. It is the middle number between the highest value and the median.
+- Q2 is the median. It splits the distribution into two equal halves.
+
+The ***interquartile range*** (IQR) is the difference between Q3 and Q1:
+
+$$IQR = Q3 - Q1$$
+
+The IQR represents the middle 50% of the distribution. Like the median, the IQR is ***robust*** in the sense that it is not affected by outliers.
+
+### Outliers
+
+***Outliers*** are extreme values in the data. A data point is considered to be an outlier if it is very small compared to the other values, or very large. Specifically, a data point is an outlier if any one of the following two cases is satisfied:
+
+$$outlier < Q1 - 1.5 \; IQR$$
+
+$$outlier > Q3 + 1.5 \; IQR$$
+
+Quartiles and outliers are visualised using [boxplots](https://duckduckgo.com/?q=boxplot&t=hy&atb=v103-3&iax=images&ia=images).
+
+Notes:
+
+- The mean is not necessarily within Q1 and Q3, although usually it is. To see this, come up with a short list of numbers and then add a huge outlier.
+- Two different data sets can have the same IQR.
+
+### Average Deviation
+
+***Average deviation*** is given by the average of deviations from each data point to the mean:
+
+$$avgdev = \frac{1}{N} \sum_i^N (x_i - \bar{x})$$
+
+The problem with average deviation is that positive deviations will cancel out negative deviations. In some distributions, the average deviation can be 0 despite the data having clear variability.
+
+### Absolute Deviation
+
+***Absolute deviation*** is like average deviation, but taking absolute values to prevent the problem with positive deviations cancelling out negative deviations:
+
+$$absdev = \frac{1}{N} \sum_i^N |x_i - \bar{x}|$$
+
+The problem with absolute deviation is that the absolute value function is not differentiable at x = 0. This makes absolute deviation inconvenient further down the road.
+
+### Variance (Average Squared Deviation)
+
+***Variance*** is the average of the squared deviations from each data point to the mean:
+
+$$var = \frac{1}{N} \sum_i^N (x_i - \bar{x})^2$$
+
+Unlike absolute deviation, variance uses squares instead of absolute values. The function $$y = x^2$$ is both *continuous* and *differentiable* at every point, including x = 0, making variance more suitable than absolute deviation.
+
+The units of variance is the square of the units of the original data points. For example, if the original data is measured in meters, then the variance is given in meters squared. For this reason, we often take the square root of the variance. This gives us the ***standard deviation***:
+
+$$stdev = \sqrt{var} = \sqrt{\frac{1}{N} \sum_i^N (x_i - \bar{x})^2}$$
+
+### Bessel's Correction
+
+Samples generally underestimate the amount of variability in a population since they tend to be values around the middle of the distribution. In other words, the variability of a sample tends to be lower than the variability in the population. When trying to estimate or infer the variance of a population from the variance of a sample, we divide by N-1 instead of N to account for this bias:
+
+$$s^2 = \frac{1}{N-1} \sum_i^N (x_i - \bar{x})^2$$
+
+Dividing by N-1 instead of N makes the estimated variance larger, which accounts for the loss of variability in the sample. This is known as ***Bessel's correction***.
+
+Note that Bessel's correction is applied ***only*** when estimating the population variance from the variance of a sample. For example, given the population:
+
+$$x = [1, 2, 3, 4, 5]$$
+
+The ***variance of the population*** would be given by:
+
+$$\sigma^2 = \frac{1}{N} \sum_i^N (x_i - \bar{x})^2$$
+
+That is, we simply divide by N and not N-1, because here we are just computing the variance of a given set of values. Also note that we use the greek letter sigma to denote the variance of the population.
+
+Now, if we drew the following sample from the above population:
+
+$$sample = [2, 3, 4]$$
+
+The ***variance of the sample*** would also be given by dividing by N:
+
+$$\sigma^2 = \frac{1}{N} \sum_i^N (x_i - \bar{x})^2$$
+
+However, when trying to *estimate* or *infer* the variance of the population from the variance in the sample, we would apply Bessel's correction and divide by N-1. This variance that results from applying Bessel's correction is called the ***sample variance***:
+
+$$s^2 = \frac{1}{N-1} \sum_i^N (x_i - \bar{x})^2 \approx \sigma^2$$
+
+Note that here we use the letter *s* instead of sigma to denote the sample variance.
+
+## Standardising
+
+Number of standard deviations away from the mean is a better way to analyze data, since this takes into account not not just mean, but also the spread/variance of the distribution. To find the number of standard deviations away from the mean, use the formula for the Z-score:
+
+$$z = \frac{x - \mu}{\sigma}$$
+
+When we convert values in a normal distribution to a z-score, we are ***standardising*** the distribution.
+
+Standardizing normal distributions of different mean and variance allows us to better compare them. This is shown in the course by comparing the number of facebook friends a person has (distribution of friends on facebook) versus the number of twitter followers another person has (distribution of twitter followers). Normalizing the two distributions allows us to determine whether one person is more "unpopular" than the other.
+
+The ***standard normal distribution*** has mean = 0 and standard deviation = 1. When standardising a normal distribution, we shift the distribution by subtracting the mean, and then scale the result by dividing by the standard deviation. So the new distribution will have a mean of 0 and a standard deviation of 1. See the videos on the course to better visualise this.
+
+Normal distributions can be converted from one to the other. First, convert the original distribution (denoted o) to the standard normal distribution. Then, convert the standard normal distribution to the target normal distribution (denoted t):
+
+$$x_t = \mu_t + \sigma_t \; \frac{(x_o - \mu_o)}{\sigma_o}$$
+
+## Normal Distribution
+
+A probability density function (pdf) gives us the relative frequencies of the values of a distribution of data. The area under a section of the pdf gives us the probability of a value falling into that range of values. To find the area, we need to calculate the integral of the pdf.
+
+For example, given a pdf f, the probability of a value k falling within a range of values [a,b] would be given by:
+
+$$P(a \le k \le b) = \int_{a}^b \, f(x) \, \mathrm{d}x$$
+
+Similarly, given a pdf f and a constant c, the probability of a value k begin less than or equal to c is given by:
+
+$$P(k \le c) = \int_{-\infty}^c \, f(x) \, \mathrm{d}x$$
+
+If the above probability is 0.8, then we would say that the constant c is the 80th percentile. If the probability is 0.9, then c would be the 90th percentile and so on.
+
+Precomputed probabilities for the standard normal distribution can be found in the [z-table](https://s3.amazonaws.com/udacity-hosted-downloads/ZTable.jpg). The z-table gives us the probability that a sample randomly taken from the standard normal distribution is less than or equal to any given z-score.
+
+The z-table gives us the probability of random value being less than a given constant. But how do we find the probability of the value being *greater* than a given constant? One way is to find the probability of the value being less than the constant, and then subtract that from 1:
+
+$$P(k \ge c) = 1 - P(k \le c)$$
+
+Another way is to use the fact that the normal distribution is symmetrical. The probability of a value k being greater than a constant c is equal to the probability of the value being less than -c:
+
+$$P(k \ge c) = P(k \le -c)$$
+
+### Pdf of a Normal Distribution
+
+Tails never actually touch the x axis. The x axis is a horizontal asymptote of the normal distribution's probability density function. Informally, this reflects the fact that when using a normal distribution, "we are never 100% sure of anything". In other words, a value could fall anywhere on the x axis, albeit the probability of falling far away from the mean would be very low.
+
+The proportion of values above or below a given number of standard deviations from the mean is the same in all normal distributions, regardless how tall or wide they are. See diagram in Lesson 15, video 6.
+
+## Sampling Distributions
+
+We can compare different samples of a given distribution by comparing their means.
+
+The mean of a population is called the population's ***expected value***. For example, a throw of a tetrahedral die can have four possible outcomes: 1, 2, 3, 4. The mean or expected value of this population is:
+
+$$\mu = \frac{1 + 2 + 3 + 4}{4} = 2.5$$
+
+The mean in this case is not a value among the possible outcomes. However, if we take a random sample from this population, we expect the sample to be around the population's expected value of 2.5.
+
+A ***sampling distribution*** is the probability distribution of a statistic based on a random sample. The idea is that given a population, we would have different unknown parameters of that population like the mean or standard deviation. To estimate them, we would take multiple samples from this population and then compute a statistic on these samples (mean, standard deviation, etc). The statistic computed from each sample would be different, but they would form a distribution with some mean and variance. The distribution of the statistic is called the *sampling distribution*. If we used the mean as the statistic, we would be looking at the *sampling distribution of the mean*, or the *distribution of sample means*.
+
+In the course, a sampling distribution is illustrated by considering the outcome of two throws of a tetrahedral dice. A single throw can yield values [1, 2, 3, 4], so two throws would yield all possible combinations of those values: [(1,1), (1,2), ..., (2,1), (2,2), ..., (4,3), (4,4)]. For each possible outcome, we compute the mean: [mean(1,1) = 1, mean(1,2) = 1.5, ..., mean(2,1) = 1.5, mean(2,2) = 2, ..., mean(4,3) = 3.5, mean(4,4)=4]. Now we have all possible sample means. If we now plot the relative frequencies of these sample means, we would have the *distribution of sample means*. This distribution of sample means is an example of a sampling distribution.
+
+In many real-world experiments, the number of possible outcomes (data points in the population) would be too large to compute the population mean directly. For example, if instead of two throws of the dice we consider 1000, the number of possible outcomes is now too big to compute their average directly. Instead, we would take random samples from the distribution (perform 1000-throws of the dice) and compute the average of each throw. The average of all these averages would then give us (estimate) the population mean. This is where sampling distributions become useful.
+
+The standard deviation of a population and the standard deviation of sample means are related. In the course, we compute the standard deviation of the population [1, 2, 3, 4] to get 1.1180 (denoted sigma). Then, we compute the standard deviation of sample means for samples of size 2, [1, 1.5, 2, ..., 3, 3.5, 4], to get 0.790569 (denoted SE). The population standard deviation (sigma) divided by the standard deviation of sample means (SE) comes out as 1.414213, which is the square root of 2:
+
+$$\frac{\sigma}{SE} = \sqrt{2}$$
+
+This result is not coincidence: 2 is our sample size (we perform two throws of the dice). In general, we have that the standard deviation of the distribution of sample means is equal to the standard deviation of the population divided by the square root of the sample size:
+
+$$SE = \frac{\sigma}{\sqrt{n}}$$
+
+### Central Limit Theorem
+
+The central limit theorem states that the sampling distribution of the mean will be normal with mean equal to the population mean and standard deviation equal to SE, where SE is the ***standard error***:
+
+$$SE = \frac{\sigma}{\sqrt{n}}$$
+
+The idea is that we have a population with a distribution of *any* shape. If we now take samples from this population, compute their means and plot their relative frequencies, the means will follow a normal distribution. For large enough samples, the mean of this normal distribution (mean of means) will be equal to the population mean, and the standard deviation equal to the standard error above. Note that this will hold true for any given distribution of any shape.
+
+#### Example: Sample Size = 1
+
+When using a sample size of 1, we don't really have sample means. All we are doing is drawing members of the actual population. The resulting sample distribution will tend towards the population distribution, with mean equal to the population mean, and standard deviation (SE) equal to the population standard deviation:
+
+$$SE = \frac{\sigma}{\sqrt{n}} = \frac{\sigma}{\sqrt 1} = \sigma$$
+
+For example, if we throw a six-face dice, we obtain a value in the set [1, 2, 3, 4, 5, 6]. If we do this many times, we will obtain a uniform sampling distribution with mean equal to the population mean (3.5) and standard deviation equal to the population standard deviation (1.7078).
+
+#### Example: Sample Size = 2
+
+When using a sample size of 2, we will obtain a normal sampling distribution with mean equal to the population mean (3.5) and standard deviation (SE) equal to:
+
+$$SE = \frac{\sigma}{\sqrt{n}} = \frac{\sigma}{\sqrt 2}$$
+
+Following the dice example, we would throw the dice twice, find the mean of the two values, and repeat this experiment to obtain a set of means. The distribution of these means would follow a normal distribution with mean equal to the population mean (3.5) and standard deviation equal to:
+
+$$SE = \frac{\sigma}{\sqrt{n}} = \frac{\sigma}{\sqrt 2} = \frac{1.70782}{\sqrt 2} = 1.2076$$
+
+For a sample size this small, we can double-check this result by finding the mean and standard deviation of the sample means. The possible outcomes of the two-throw experiment are:
+
+$$[(1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(2,1),(2,2),(2,3),(2,4),(2,5),(2,6),(3,1),(3,2),(3,3),(3,4),(3,5),(3,6),(4,1),(4,2),(4,3),(4,4),(4,5),(4,6),(5,1),(5,2),(5,3),(5,4),(5,5),(5,6),(6,1),(6,2),(6,3),(6,4),(6,5),(6,6)]$$
+
+These are 6*6 = 36 possible outcomes.
+
+The mean of each of the outcomes is:
+
+$$[1.0,1.5,2.0,2.5,3.0,3.5,1.5,2.0,2.5,3.0,3.5,4.0,2.0,2.5,3.0,3.5,4.0,4.5,2.5,3.0,3.5,4.0,4.5,5.0,3.0,3.5,4.0,4.5,5.0,5.5,3.5,4.0,4.5,5.0,5.5,6.0]$$
+
+The sum of the means is 126. 126 divided by 36 is 3.5, which is equal to the population mean. So the mean of the sampling distribution is equal to the population mean.
+
+The standard deviation of the means can be found by applying the formula:
+
+$$stdev = \sqrt{\frac{1}{N} \sum_i^N (x_i - \bar{x})^2}$$
+
+This comes out as 1.2076, which is equal to the population standard deviation divided by the square root of the sample size (2) as shown above.
+
+#### Example: Sample Size = 5
+
+Continuing with the dice example, the sampling distribution with a sample size of 5 will be a normal distribution with mean equal to the population mean (3.5) and standard deviation SE equal to:
+
+$$SE = \frac{\sigma}{\sqrt{n}} = \frac{\sigma}{\sqrt 5} = \frac{1.70782}{\sqrt 5} = 0.76376$$
+
+The standard deviation of the sampling distribution, SE, is now smaller than with a sample size of 2.
+
+#### Example: Larger Sample Sizes
+
+With larger sample sizes, the sampling distribution will be normally distributed with the same mean but with smaller standard deviation. That is, as we increase the sample size, the sampling distribution will remain centered at the same point but become skinnier and skinner.
+
+As the sample size increases, we have a more accurate representation of the population parameters. The standard error tells us the interval in which the population mean is most likely going to lie, so we want the standard error to be as small as possible. To have a smaller standard error, we need a larger sample size. As the sample size increases, the standard error decreases, and the more accurate our estimation of the population mean. See videos 14 and 21 of lesson 17 for an illustration of this concept.
+
+#### Corollary
+
+The Central Limit Theorem helps us tell where in the population of sample means a particular sample will lie; the larger the sample size, the greater the confidence we will have that the estimated sample mean is close to the population mean.
+
+Also note that since:
+
+$$SE = \frac{\sigma}{\sqrt{n}}$$
+
+We need four times a larger sample size (quadruple n) to reduce the error by half:
+
+$$\frac{\sigma}{\sqrt{4n}} = \frac{\sigma}{2\sqrt{n}} = \frac{1}{2} \frac{\sigma}{\sqrt{n}} = \frac{1}{2} SE$$
+
+## Estimation
+
+Suppose we perform an *intervention* on a population. An intervention is any side effect that could change the population's mean. This could be presenting a set of users with a new feature to increase average satisfaction, or using songs in the course to increase students' average engagement ratio. Since we do not want to take the risk of making matters worse (decreasing satisfaction or engagement by introducing a feature or song that people do not like), we would usually choose a random sample of the population and test the new feature or song with those users only, in an attempt to determine how their average satisfaction, engagement ratio, or whatever variable we are trying to influence would change. After choosing the random sample and trying out the new feature or song, we measure the new average satisfaction or engagement of the sample. The mean satisfaction or engagement of the sample would be a ***point estimate*** of the new population mean (average satisfaction or engagement).
+
+A ***point estimate*** is an estimate resulting from a single sample. A point estimate will likely not be the true value we are trying to find, but will instead fall within a range of values centered around that true value. That is, if we were to now ship the new feature to every user in the population, we would not be able to tell what the new population mean (average satisfaction or engagement) would be for sure, but we can tell that it will be within a range of values with a certain probability.
+
+To find the range of values and probability that the new population mean would lie in, we use two results from previous lessons.
+
+First, we know that a sampling distribution will be a normal distribution with mean equal to the population mean and standard deviation (standard error) equal to
+
+$$SE = \frac{\sigma}{\sqrt{n}}$$
+
+where *n* is the sample size.
+
+Second, we know from the [68-95-99.7 rule](https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule) that in a normal distribution, 95% of values will be within plus/minus two sample deviations from the mean:
+
+$$P(\mu - 2\sigma \le X \le \mu + 2\sigma) \approx 0.9545$$
+
+Therefore, 95% of values in the sampling distribution fall within plus/minus two standard errors from the population mean (or sampling distribution mean, they are the same):
+
+$$P(\mu - 2\frac{\sigma}{\sqrt{n}} \le X \le \mu + 2\frac{\sigma}{\sqrt{n}}) \approx 0.9545$$
+
+What we do next is ***assume*** that our point estimate *x*, the mean satisfaction or engagement of the sample on which we tested the new feature or song, is one of the values that falls within the 95% range of the ***new population mean*** after the intervention. In other words, if we were to now roll out the new feature or song to everyone in the original population (intervene the population), the new population mean would change, and we assume that our point estimate *x* lies within the 95% range of the new mean.
+
+Combining the two results above, we know that the new population mean (after the intervention) is plus/minus two standard deviations from our point estimate *x* with a probability of 95%:
+
+$$P(\bar{x} - 2\frac{\sigma}{\sqrt{n}} \le \mu_{new} \le \bar{x} + 2\frac{\sigma}{\sqrt{n}}) \approx 0.9545$$
+
+This result allows us to tell, with a certain probability, what the new population mean would be after the intervention.
+
+The interval above is called the ***95% confidence interval for the mean***:
+
+$$CI_{95} = (\bar{x} - 2\frac{\sigma}{\sqrt{n}}, \; \bar{x} + 2\frac{\sigma}{\sqrt{n}})$$
+
+The distance used in the above example is called the ***margin of error***. The *margin of error* is half the width of the confidence interval. In the example, the margin of error is:
+
+$$2\frac{\sigma}{\sqrt{n}}$$
+
+The values plus/minus 2 are the ***critical values of z for 95% confidence***.
+
+More generally, the Y% confidence interval is given by:
+
+$$\bar{x} - z\frac{\sigma}{\sqrt{n}} \le X \le \bar{x} + z\frac{\sigma}{\sqrt{n}}$$
+
+for the relevant z-score *z* (each of plus/minus z would correspond to 100% - Y%/2 of values).
+
+Note from the equation above that the larger the sample size, the narrower the confidence interval, and therefore the more confident we are about the true value of the new population mean. This means that when conducting estimations, we should try to use the biggest sample size possible, so that we can predict the new population mean more accurately.
+
+If the *old population mean* falls on the tails of the confidence interval for the point estimate of the *new population mean*, the point estimate is unlikely to have occurred by chance, and this suggests that the intervention on the population does affect the population mean (the new feature does increase user satisfaction, or the song increases engagement). This is what we call a ***treatment effect***. A *treatment effect* occurs when the intervention affects the population mean.
+
+Finally, and to be more precise, the 95% confidence interval actually corresponds to z-scores -1.96 and 1.96 (2.5% of values lie below -1.96 standard deviations from the mean, and another 2.5% above 1.96 standard deviations from the mean, for a total of 5%), rather than plus/minus 2:
+
+$$P(\bar{x} - 1.96\frac{\sigma}{\sqrt{n}} \le X \le \bar{x} + 1.96\frac{\sigma}{\sqrt{n}}) \approx 0.95$$
+
+### Example: Bieber Tweeter
+
+Estimation is first illustrated in the course with the population of Klout scores and the random sample of 35 users who use the Bieber tweeter application. The original population has mean of 37.72, whereas the Bieber tweeter users push the mean to 40. We only have a single sample of Bieber tweeter users, so this mean of 40 is a *point estimate*. The question is then: *"with what confidence is our estimate of mean=40 accurate"*? This is answered by looking at the range of values in a sampling distribution of sample size = 35. If the range is (relatively) large, then the point estimate will likely be not very accurate. if the range is (relatively) small like illustrated in the course, then we can be confident that our estimate is relatively accurate. Not only can we tell whether we are confident or not, but the central limit theorem allows us to *quantify* that confidence.
+
+Another way to rephrase the above question, *"how confident are we that the point estimate of 40 is accurate"* is *"if everyone in the population were to use the Bieber tweeter application, what would the new population mean be? How close would it be to 40?"*.
+
+What we do next is put two and two together. We would like to know what the new population mean would be if everyone used the Bieber tweeter application. On the one hand, we know that any given estimate of mean Klout score of users who use the Bieber tweeter application will be within plus/minus two standard errors from this new and unknown mean (two standard deviations of the sampling distribution, which is two standard errors):
+
+$$P(\mu_{BT} - 2\frac{\sigma}{\sqrt{n}} \le X \le \mu_{BT} + 2\frac{\sigma}{\sqrt{n}}) \approx 0.9545$$
+
+where
+
+$$\mu_{BT}$$
+
+is the new and unknown population mean we are trying to find.
+
+On the other hand, we have mean=40 as one such estimate of the new mean that we took from a random sample of size 35. We then **assume** that this estimate of 40 is going to lie within the 95% interval and then write:
+
+$$P(\mu_{BT} - 2\frac{\sigma}{\sqrt{35}} \le 40 \le \mu_{BT} + 2\frac{\sigma}{\sqrt{35}}) \approx 0.9545$$
+
+And now we solve for the unknown mean:
+
+$$P(\mu_{BT} - 2\frac{\sigma}{\sqrt{35}} \le 40 \le \mu_{BT} + 2\frac{\sigma}{\sqrt{35}}) \approx 0.9545$$
+
+$$P(-2\frac{\sigma}{\sqrt{35}} \le 40 - \mu_{BT} \le 2\frac{\sigma}{\sqrt{35}}) \approx 0.9545$$
+
+$$P(-40 - 2\frac{\sigma}{\sqrt{35}} \le -\mu_{BT} \le -40 + 2\frac{\sigma}{\sqrt{35}}) \approx 0.9545$$
+
+$$P(40 + 2\frac{\sigma}{\sqrt{35}} \ge \mu_{BT} \ge 40 - 2\frac{\sigma}{\sqrt{35}}) \approx 0.9545$$
+
+In the course example,
+
+$$\sigma = 16.04$$
+
+therefore:
+
+$$P(34.591 \le \mu_{BT} \le 45.408) \approx 0.9545$$
+
+What this tells us is that if everyone used the Bieber tweeter application, the new population mean would be somewhere between 34.591 and 45.408 with 95% probability.
+
+In other words, what we have done is assume that the new population mean will contain our point estimate of the new mean, 40, with 95% probability. If that is the case, then the new population mean could lie anywhere between 34.591 and 45.408, because any normal distribution of standard deviation
+
+$$SE = \frac{\sigma}{\sqrt{35}}$$
+
+centered at any of those points would contain the mean of 40 within the 95% interval. See the diagram on slides 10 (after completing the quiz), 11, and 23 of Lesson 19 for an illustration of this.
+
+In this example, the interval
+
+$$(34.591, 45.408)$$
+
+is the *95% confidence interval for the mean*.
+
+#### Conclusions from the use of the Bieber Tweeter application
+
+Note that the original population mean, 37.72, is well within the 95% confidence interval for the mean, (34.591, 45.408). This could mean that the sample mean of size 35 and mean of 40 could have been selected by random chance, and the fact that those 35 users use the Bieber Tweeter application has no effect on their mean Klout score.
+
+If instead of a sample size of 35, we used a sample size of 250 and obtained the same mean, 40, the new confidence interval using a sample size of 250 would be:
+
+$$P(40 + 2\frac{\sigma}{\sqrt{250}} \ge \mu_{BT} \ge 40 - 2\frac{\sigma}{\sqrt{250}}) \approx 0.9545$$
+
+$$P(40 + 2\frac{16.04}{\sqrt{250}} \ge \mu_{BT} \ge 40 - 2\frac{16.04}{\sqrt{250}}) \approx 0.9545$$
+
+$$P(37.971 \ge \mu_{BT} \ge 42.028) \approx 0.9545$$
+
+$$CI_{95} = (37.971, \; 42.028)$$
+
+Now, the original population mean, 37.72, is very close to the lower bound of the interval, 37.971. This suggests that the sample mean of 40 was not selected by random chance, and that the use of the Bieber Tweeter application does increase the mean Klout score. In other words, this is evidence for a *treatment effect*. By increasing the sample size, we narrowed down the confidence interval, and this has given us more confidence to conclude that the Bieber Tweeter application does increase mean Klout score.
+
+### Example: Engagement Ratio
+
+Suppose that we want to measure how engaged students are with the course. One way to define engagement would be by measuring how many minutes of video a student has watched over the total number of video minutes:
+
+$$Engagement\_ratio = \frac{Number\_of\_minutes\_watched}{Total\_Minutes\_Available}$$
+
+Now suppose that we have N = 8702 students, and that the population of engagement ratios comes out with a mean of 0.077 and standard deviation 0.107. How can we possibly increase the mean engagement ratio?
+
+One way to try to increase mean engagement ratio is to introduce hypothesis testing (one of the topics later in the course) with a song. The idea is that students would like the song, learn the concept more easily, and consequently be more engaged with the course. However, we would not want a failed experiment to result in a lower engagement ratio. That is, if we roll out a video with a song on hypothesis testing and people do not like it, we would not want that to decrease the mean engagement ratio. So instead, we pick a random subset of students, and show the song only to them. Suppose that we use a sample size of 20 students for this experiment, and that the mean engagement ratio for these 20 students (the point estimate of the new population mean after intervention) comes out as 0.13.
+
+Before continuing, a note on population skweness. A mean engagement ratio of 0.13 means that students would watch, on average, 8 minutes of every 60 minutes of video. Note that the population of engagement ratios, as presented in the course, is heavily skewed. This is because there are a lot of students who sign up for the course, but who do not actually watch the lessons. Therefore, the new mean engagement ratio of 0.13, or 8 minutes for every 60 minutes of video, is heavily biased towards 0. If we measured the mean engagement ratio for students that do actually follow the course, our new point estimate would probably be much higher.
+
+The 95% confidence interval for the new mean engagement ratio is:
+
+$$P(\bar{x} - 1.96\frac{\sigma}{\sqrt{n}} \le X \le \bar{x} + 1.96\frac{\sigma}{\sqrt{n}}) \approx 0.95$$
+
+$$P(0.13 - 1.96\frac{0.107}{\sqrt{20}} \le X \le 0.13 + 1.96\frac{0.107}{\sqrt{20}}) \approx 0.95$$
+
+$$P(0.083 \le X \le 0.177) \approx 0.95$$
+
+$$CI_{95} = (0.083, \; 0.177)$$
+
+In terms of minutes, this is CI = (5, 10.62). That is, we are 95% confident that the new song would increase the mean engagement ratio to at least 5 minutes per 60 minutes of video, and to at most 10.62 minutes per 60 minutes of video. Also note that the mean engagement ratio of the original population (before the intervention), 0.077, or 4.6 minutes per 60 minutes of video, is outside of the 95% confidence interval. This suggests that the new song does increase the average engagement ratio.
+
+### Example: Engagement and Learning
+
+The previous measure of engagement has some flaws. For example, one can increase engagement by just auto-playing videos, which would not equate to the person learning. Instead, and since what we really want to measure is whether students are learning, let's measure two new variables:
+
+- Self-reported engagement, from 1 to 10.
+- Self-reported learning, from 1 to 10.
+
+Note that individual scores of self-reported engagement and learning do not give us a lot of information, since those measures are not very well defined; the score is up to the person's definition of what good engagement and learning are. This does not affect us much, however, because all we are interesting in is seeing if the intervention, in this case the hypothesis testing song, has an effect on engagement and learning. As long as everyone uses the convention that higher scores equate to higher engagement and learning, that is all we need for our test.
+
+Next, we run a poll, and ask students to self-report their engagement and learning. Engagement comes out to have a mean of 7.5 with standard deviation 0.64. Learning comes out with a mean of 8.2 and standard deviation 0.73.
+
+Now, we choose a random sample of 20 students, and introduce them to the hypothesis testing song. Then, we run another poll on this random sample. The mean engagement (after intervention on the random sample) comes out as 8.94, and the mean learning as 8.35.
+
+From the central limit theorem, we know that the sampling distribution of mean engagement with a sample size of 20 will have mean equal to the population mean, 7.5, and standard deviation:
+
+$$SE = \frac{\sigma}{\sqrt{n}} = \frac{0.64}{\sqrt{20}} = 0.1431$$
+
+Similarly, the sampling distribution of mean learning will have mean 8.2 and standard deviation:
+
+$$SE = \frac{\sigma}{\sqrt{n}} = \frac{0.73}{\sqrt{20}} = 0.1632$$
+
+Next, we find where our samples fall in their corresponding sampling distributions. The z-score for the sample of engagement, 8.94, is:
+
+$$z_E = \frac{x - \mu}{\sigma} = \frac{8.94 - 7.4}{0.1431} = 10.28571$$
+
+The z-score for the sample of learning, 8.35, is:
+
+$$z_L = \frac{x - \mu}{\sigma} = \frac{8.35 - 8.2}{0.1632} = 0.93750$$
+
+Now, what is the probability of randomly selecting a sample of size 20 and getting a mean of 8.94 for engagement and 8.35 for learning? The mean of 8.94 for engagement corresponds to a z-score of 10.28, which is way off charts. The probability of this is very near zero. On the other hand, the mean of 8.35 for learning corressponds to a z-score of 0.9375. Using the [z-score table](https://s3.amazonaws.com/udacity-hosted-downloads/ZTable.jpg):
+
+$$P(X \ge 8.35) = P(z \ge 0.9375) = 1 - P(z \le 0.9375) = 0.1788$$
+
+This is still a relatively low probability, but it is much higher than the one for engagement, which is near 0.
+
+What we can conclude from this is that the hypothesis testing song *seems to* increase engagement, but not learning, for the random sample of 20 students.
+
+To see why, consider the opposite scenario. Assume that the song had no effect. Now, pick a random sample of size 20 from the population of learning scores. What is the probability that the mean of this sample is 8.35? From the central limit theorem, and as we found above, this is 0.1788. It's a relatively high probability, it is therefore quite possible that this just happened by chance. Therefore, we cannot conclude that the song had an effect on learning.
+
+On the other hand, and still assuming that the song had no effect, pick a random sample of size 20 from the population of engagement scores. What is the probability that the mean of this sample is 8.94? From the central limit theorem, and as we found above, this is very near 0 (a z-score of 10.28)! Therefore, there is evidence to suggest that the song did have an effect in the engagement scores of our sample of 20 students.
+
+Note that we still cannot be sure whether the song *caused* higher engagement without setting up a proper experiment with proper control conditions. The results from our intervention only *suggest* that the song increases average engagement.
+
+## Hypothesis Testing
+
+In the *Engagement and Learning* experiment in the previous lesson, we found that the probability of obtaining a mean of 8.35 for learning after intervention was 0.1788. We then said that this was *"likely"*, and concluded that the data did not suggest that the song on hypothesis testing would have a significant effect on learning. But how likely is "likely"?
+
+Statisticians have settled on different values for the probability of getting a sample mean that are qualifies as "unlikely". These are 0.05 (5% probability), 0.01 (1%), and 0.001 (0.1%). These values are called the ***alpha levels***. We use different alpha levels to quantify how unlikely a given sample statistic is.
+
+The ***critical region*** in a sample distribution is the region that represents a probability of obtaining a sample mean smaller than the alpha level. The z-score of the alpha value, which cuts off the critical region from the rest of the distribution, is called the ***z-critical value***. If a z-score of a sample mean is greater than the *z-critical value* (falls in the *critical region*), then we have evidence to suggest that these sample statistics are different from the untreated population. See lesson 21, slide 4 for an illustration.
+
+| Alpha level | z-critical value |
+|-------------|------------------|
+|    0.05     |       1.65       |
+|    0.01     |       2.32       |
+|    0.001    |       3.08       |
+
+Moving forwards, we split up the sampling distribution into the critical regions listed above, using alpha levels 0.05, 0.01, and 0.001. Then, given a sample mean, we report that mean under the smallest alpha level. For example, if the sample mean corresponds to z-score 1.82, this sample mean would fall above the 1.65 z-critical value (0.05 alpha level), but below the 2.32 z-critical value (0.01 alpha level). We would then say that this sample mean of 1.82 is *"**significant** at p < 0.05"*. More examples follow:
+
+| z-score | Significant at: |
+|---------|-----------------|
+|  3.14   |      0.001      |
+|  2.07   |      0.05       |
+|  2.57   |      0.01       |
+| 14.31   |      0.001      |
+
+
+
+
